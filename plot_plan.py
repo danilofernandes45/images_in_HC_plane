@@ -14,7 +14,7 @@ def process_data():
         img_id = int(file.split("/")[-1].split(".")[0])
         image_read = cv2.imread(file)
         # conversion numpy array into rgb image to show
-        img = cv2.cvtColor(image_read, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(image_read, cv2.COLOR_BGR2GRAY)       
         hc = ordpy.complexity_entropy(img, dx = 2, dy = 2, taux = 1, tauy = 1)
         data.append([img_id, hc[0], hc[1]])
         fs = ordpy.fisher_shannon(img, dx = 2, dy = 2, taux = 1, tauy = 1)
@@ -37,7 +37,34 @@ def process_data():
     # data_fisher.to_csv("FS_data.csv", index = False)
     return data, data_fisher
 
+def process_bandt_pomp():
+    data = []
+    data_fisher = []
+    folder = os.getcwd() + "/data/images/*.*"
+    for file in glob.glob(folder):
+        img_id = int(file.split("/")[-1].split(".")[0])
+        image_read = cv2.imread(file)
+        # conversion numpy array into rgb image to show
+        img = cv2.cvtColor(image_read, cv2.COLOR_BGR2GRAY)
+        ord_dis = ordpy.ordinal_distribution(img, dx = 2, dy = 2, taux = 1, tauy = 1)
+        data.append([img_id] + list(ord_dis[1]))
+
+    data = pd.DataFrame(data).sort_values(0).reset_index(drop = True)
+    labels = pd.read_csv("data/labels/groups_DPD.txt", header = None)
+    data["Label"] = labels
+    dict_label = {"consolidacao": "Pulmonary Consolidation",
+                  "enfisema": "Emphysematous Area",
+                  "espessamento": "Septal Thickening",
+                  "favo_de_mel": "Honeycomb",
+                  "normal": "Healthy",
+                  "vidro_fosco": "Ground-glass Opacity"}
+    data.Label = data.Label.apply(lambda x : dict_label[x] if x in dict_label.keys() else x)
+    data.to_csv("BP_data.csv", index = False)
+    return data
+
 # data_hc, data_fs = process_data()
+
+process_bandt_pomp()
 
 data_hc = pd.read_csv("HC_data.csv")
 data_fs = pd.read_csv("FS_data.csv")
