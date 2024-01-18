@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 folds = 10
 kf = KFold(n_splits=folds)
-data = pd.read_csv("BP_data_3_2.csv")
+data = pd.read_csv("weighted_BP_data_(5).csv")
 label = data["Label"]
 data.drop(columns = ["Label", "img_id"], inplace = True)
 label_summary = label.unique()
