@@ -51,9 +51,11 @@ def process_smoothness_structure(shape, linspace = range(5), q = 2):
     # data.to_csv(f"transformed_data/Synthetic/{filename}.csv", index = False)
     return data
 
-data_ss = process_smoothness_structure(shape = (256, 256), linspace = np.linspace(0, 6, num = 61), q = 10)
+data_ss = process_smoothness_structure(shape = (256, 256), linspace = np.linspace(0, 6, num = 61), q = 0)
 
 plt.rcParams.update({"font.size": 17})
 sns.scatterplot(data = data_ss, x = 'Smoothness', y = "Curve structure", hue = 'k', palette = 'viridis', legend = None)
 # plt.colorbar(cm.ScalarMappable(cmap=cm.viridis))
+plt.ylim([-0.025, 0.5])
+plt.xlim([-0.025, 0.7])
 plt.show()
